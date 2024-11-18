@@ -4,7 +4,6 @@ import com.fiap.guardian_bff.dto.oauth.RealizarLoginDTO;
 import com.fiap.guardian_bff.dto.oauth.TokenDTO;
 import com.fiap.guardian_bff.dto.util.ErrorMessageDTO;
 import com.fiap.guardian_bff.exceptions.AuthenticationException;
-import com.fiap.guardian_bff.model.Usuario;
 import com.fiap.guardian_bff.service.LoginService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

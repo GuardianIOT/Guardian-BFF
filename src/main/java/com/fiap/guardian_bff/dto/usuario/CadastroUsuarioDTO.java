@@ -2,6 +2,7 @@ package com.fiap.guardian_bff.dto.usuario;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record CadastroUsuarioDTO(
         @NotBlank
@@ -12,6 +13,8 @@ public record CadastroUsuarioDTO(
             @Email
         String email,
         @NotBlank
-        String senha
+        String senha,
+        @NotNull
+        Long idCompanhia
 ) {
 }

@@ -73,6 +73,7 @@ public class SecurityConfig {
         listaDeUrlsLiberadas.add(new AntPathRequestMatcher("/api-docs/**"));
         listaDeUrlsLiberadas.add(new AntPathRequestMatcher("/login"));
         listaDeUrlsLiberadas.add(new AntPathRequestMatcher("/usuario/cadastrar"));
+        listaDeUrlsLiberadas.add(new AntPathRequestMatcher("/companhia/cadastrar"));
 
         return listaDeUrlsLiberadas;
     }
