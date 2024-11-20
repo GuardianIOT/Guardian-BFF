@@ -19,8 +19,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -28,31 +26,48 @@ public class SecurityConfig {
     @Autowired
     private UserAuthenticatorFilter userAuthenticationFilter;
 
-    private List<AntPathRequestMatcher> listaDeUrlsLiberadas = null;
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
-        listaDeUrlsLiberadas = carregarListaUrlsLiberadas();
+
+        List<AntPathRequestMatcher> listaDeUrlsLiberadas = carregarListaUrlsLiberadas();
 
         http.authorizeHttpRequests((authorize) -> {
-            for (AntPathRequestMatcher e: listaDeUrlsLiberadas){
+            for (AntPathRequestMatcher e : listaDeUrlsLiberadas) {
                 authorize.requestMatchers(e).permitAll();
             }
+            authorize.requestMatchers("/companhia/**").hasRole("ADMIN");
+            authorize.requestMatchers("/usuario/listar-todos").hasRole("ADMIN");
+            authorize.requestMatchers("/alertas/listar-todos").hasRole("ADMIN");
+
+            authorize.anyRequest().authenticated();
         });
-        http.authorizeHttpRequests((a) -> a.anyRequest().authenticated());
 
         http.headers(httpSecurityHeadersConfigurer -> {
-            httpSecurityHeadersConfigurer.frameOptions(frameOptionsConfig -> frameOptionsConfig.sameOrigin().httpStrictTransportSecurity(d -> d.includeSubDomains(true).maxAgeInSeconds(31536000)));
+            httpSecurityHeadersConfigurer.frameOptions(frameOptionsConfig ->
+                    frameOptionsConfig.sameOrigin().httpStrictTransportSecurity(d ->
+                            d.includeSubDomains(true).maxAgeInSeconds(31536000)));
         });
-        http.formLogin(AbstractHttpConfigurer::disable);
-        http.addFilterBefore(userAuthenticationFilter, UsernamePasswordAuthenticationFilter.class).httpBasic(withDefaults());
 
-        return http.exceptionHandling(httpSecurityExceptionHandlingConfigurer -> httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint((request, response, authException) -> {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json");
-            response.getWriter().write( "{\"error\": \"Token invalido ou expirado\"}");
-        })).build();
+        http.formLogin(AbstractHttpConfigurer::disable);
+
+        http.addFilterBefore(userAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+        http.exceptionHandling(httpSecurityExceptionHandlingConfigurer -> {
+            httpSecurityExceptionHandlingConfigurer
+                    .authenticationEntryPoint((request, response, authException) -> {
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        response.setContentType("application/json");
+                        response.getWriter().write("{\"error\": \"Token inválido ou expirado\"}");
+                    })
+                    .accessDeniedHandler((request, response, accessDeniedException) -> {
+                        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                        response.setContentType("application/json");
+                        response.getWriter().write("{\"error\": \"Acesso proibido: Requer permissão adicional\"}");
+                    });
+        });
+
+        return http.build();
     }
 
     @Bean
@@ -65,17 +80,14 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    protected List<AntPathRequestMatcher> carregarListaUrlsLiberadas(){
+    protected List<AntPathRequestMatcher> carregarListaUrlsLiberadas() {
         List<AntPathRequestMatcher> listaDeUrlsLiberadas = new ArrayList<>();
         listaDeUrlsLiberadas.add(new AntPathRequestMatcher("/actuator"));
         listaDeUrlsLiberadas.add(new AntPathRequestMatcher("/swagger-ui/index.html"));
-        listaDeUrlsLiberadas.add(new AntPathRequestMatcher("/swagger-ui/**"));;
+        listaDeUrlsLiberadas.add(new AntPathRequestMatcher("/swagger-ui/**"));
         listaDeUrlsLiberadas.add(new AntPathRequestMatcher("/api-docs/**"));
         listaDeUrlsLiberadas.add(new AntPathRequestMatcher("/login"));
-        listaDeUrlsLiberadas.add(new AntPathRequestMatcher("/usuario/cadastrar"));
-        listaDeUrlsLiberadas.add(new AntPathRequestMatcher("/companhia/cadastrar"));
-
         return listaDeUrlsLiberadas;
     }
-
 }
+

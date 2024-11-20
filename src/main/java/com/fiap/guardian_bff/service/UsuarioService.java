@@ -78,4 +78,9 @@ public class UsuarioService {
     public void deletarUsuario(Long codigoUsuario){
         usuarioRepository.deleteById(codigoUsuario);
     }
+
+    public List<Usuario> listarPorCompanhia(String emailUsuario) {
+        Companhia companhia = usuarioRepository.findByEmail(emailUsuario).get().getCompanhia();
+        return usuarioRepository.findAllByCompanhia(companhia);
+    }
 }

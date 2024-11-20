@@ -33,7 +33,7 @@ public class CompanhiaController {
                     content = @Content(schema = @Schema(implementation = Companhia.class))),
             @ApiResponse(responseCode = "400", description = "Erro ao cadastrar companhia",
                     content = @Content(schema = @Schema(implementation = ErrorMessageDTO.class)))})
-    @PostMapping("/cadastrar")
+    @PostMapping
     public ResponseEntity cadastrarCompanhia(@RequestBody @Valid CadastroCompanhiaDTO cadastroCompanhiaDTO) {
         Companhia companhia = companhiaService.cadastrar(cadastroCompanhiaDTO);
         return ResponseEntity.status(201).body(companhia);

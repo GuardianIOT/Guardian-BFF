@@ -25,6 +25,7 @@ public class TokenService {
                     .withIssuedAt(creationDate())
                     .withExpiresAt(expirationDate())
                     .withSubject(usuario.getEmail())
+                    .withClaim("idUsuario", usuario.getCodigo())
                     .sign(algorithm);
         } catch (JWTCreationException exception){
             throw new JWTCreationException("Erro ao gerar token.", exception);

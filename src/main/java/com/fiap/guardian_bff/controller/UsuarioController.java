@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +34,7 @@ public class UsuarioController {
                     content = @Content(schema = @Schema(implementation = Usuario.class))),
             @ApiResponse(responseCode = "400", description = "Erro ao cadastrar usuário",
                     content = @Content(schema = @Schema(implementation = ErrorMessageDTO.class)))})
-    @PostMapping("/cadastrar")
+    @PostMapping
     public ResponseEntity cadastrarUsuario(@RequestBody @Valid CadastroUsuarioDTO cadastroUsuarioDTO) {
         try {
             Usuario usuario = usuarioService.cadastrar(cadastroUsuarioDTO);
@@ -43,10 +44,19 @@ public class UsuarioController {
         }
     }
 
-    @Operation(summary = "Lista os usuários do sistema", responses = {
+    @Operation(summary = "Lista os usuários da companhia", responses = {
             @ApiResponse(responseCode = "200", description = "Sucesso",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = Usuario.class))))})
     @GetMapping
+    public ResponseEntity<List<Usuario>> listarUsuarios(@AuthenticationPrincipal String emailUsuario) {
+        return ResponseEntity.ok(usuarioService.listarPorCompanhia(emailUsuario));
+    }
+
+
+    @Operation(summary = "Lista todos os usuários do sistema", responses = {
+            @ApiResponse(responseCode = "200", description = "Sucesso",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = Usuario.class))))})
+    @GetMapping("/listar-todos")
     public ResponseEntity<List<Usuario>> listarUsuarios() {
         return ResponseEntity.ok(usuarioService.listarTodos());
     }

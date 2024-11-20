@@ -22,9 +22,17 @@ public class Companhia {
     private String endereco;
     private Long telefone;
     private String email;
-    @OneToMany(cascade = CascadeType.REMOVE)
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Usuario> usuarios;
+
+    public Companhia(String razaoSocial, String cnpj, Long telefone, String endereco, String email) {
+        this.razaoSocial = razaoSocial;
+        this.cnpj = cnpj;
+        this.telefone = telefone;
+        this.endereco = endereco;
+        this.email = email;
+    }
 
     public Companhia(CadastroCompanhiaDTO cadastroCompanhiaDTO) {
         this.razaoSocial = cadastroCompanhiaDTO.razaoSocial();
