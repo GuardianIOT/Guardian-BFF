@@ -1,0 +1,7 @@
+az group create --name guardian --location canadaeast
+
+az appservice plan create --name guardian-plan --resource-group guardian --location canadaeast --sku F1 --is-linux
+
+az webapp create --name guardian --resource-group guardian --plan guardian-plan --runtime "JAVA:17-java17"
+
+az webapp show --name guardian --resource-group guardian
