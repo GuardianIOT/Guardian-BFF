@@ -1,7 +1,5 @@
 package com.fiap.guardian_bff.service;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fiap.guardian_bff.dto.alertas.AlertaDTO;
 import com.fiap.guardian_bff.dto.alertas.ListarAlertasDTO;
 import com.fiap.guardian_bff.model.Alerta;
@@ -12,11 +10,12 @@ import com.fiap.guardian_bff.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,21 +30,23 @@ public class AlertasService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    public List<Alerta> listarAlertas(String email){
-        Companhia companhia = usuarioRepository.findByEmail(email).get().getCompanhia();
-        return alertasRepository.findAllByCompanhia(companhia);
+    public Page<Alerta> listarAlertas(String email, int page, int size) {
+        Companhia companhia = usuarioRepository.findByEmail(email).orElseThrow(() ->
+                new RuntimeException("Usuário não encontrado")).getCompanhia();
+        Pageable pageable = PageRequest.of(page, size);
+        return alertasRepository.findAllByCompanhia(companhia, pageable);
     }
 
-    public List<ListarAlertasDTO> listarAlertas(){
-        List<Alerta> all = alertasRepository.findAll();
-        ArrayList<ListarAlertasDTO> listarAlertasDTOS = new ArrayList<>();
+    public Page<ListarAlertasDTO> listarAlertas(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Alerta> alertas = alertasRepository.findAll(pageable);
 
-        for(Alerta alerta : all){
-            listarAlertasDTOS.add(new ListarAlertasDTO(alerta.getId(), alerta.getDataAlerta(), alerta.getCompanhia().getCodigo()));
-        }
-
-        return listarAlertasDTOS;
+        return alertas.map(alerta -> new ListarAlertasDTO(
+                alerta.getId(),
+                alerta.getDataAlerta(),
+                alerta.getCompanhia().getCodigo()));
     }
+
 
 
     @Transactional
