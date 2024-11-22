@@ -30,8 +30,12 @@ public class AerogeradorController {
             @ApiResponse(responseCode = "400", description = "Bad Request")})
     @PostMapping
     public ResponseEntity criarAerogerador(@RequestBody Aerogerador aerogerador) {
-        aerogeradorService.criarAerogerador(aerogerador);
-        return ResponseEntity.ok(aerogerador);
+        try {
+            aerogeradorService.criarAerogerador(aerogerador);
+            return ResponseEntity.ok(aerogerador);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Ocorreu um erro ao realizar a integração entre os serviços. Verifique o corpo da sua requisição");
+        }
     }
 
 
@@ -41,8 +45,12 @@ public class AerogeradorController {
             @ApiResponse(responseCode = "404", description = "Not Found")})
     @GetMapping("/{id}")
     public ResponseEntity obterAerogeradorPorId(@PathVariable int id) {
-        Aerogerador aerogerador = aerogeradorService.obterAerogeradorPorId(id);
-        return ResponseEntity.ok(aerogerador);
+        try {
+            Aerogerador aerogerador = aerogeradorService.obterAerogeradorPorId(id);
+            return ResponseEntity.ok(aerogerador);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Ocorreu um erro ao realizar a integração entre os serviços. Verifique o corpo da sua requisição");
+        }
     }
 
     @Operation(summary = "Lista os aerogeradores", responses = {
@@ -51,8 +59,12 @@ public class AerogeradorController {
             @ApiResponse(responseCode = "404", description = "Not Found")})
     @GetMapping
     public ResponseEntity obterAerogeradores() {
-        List<Aerogerador> aerogeradors = aerogeradorService.obterAerogeradores();
-        return ResponseEntity.ok(aerogeradors);
+        try {
+            List<Aerogerador> aerogeradors = aerogeradorService.obterAerogeradores();
+            return ResponseEntity.ok(aerogeradors);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Ocorreu um erro ao realizar a integração entre os serviços. Verifique o corpo da sua requisição");
+        }
     }
 
     @Operation(summary = "Altera um aerogerador na base de dados", responses = {
@@ -61,8 +73,12 @@ public class AerogeradorController {
             @ApiResponse(responseCode = "404", description = "Not Found")})
     @PutMapping("/{id}")
     public ResponseEntity alterarGerador(@PathVariable("id") int id, Aerogerador aerogerador) {
-        Aerogerador aerogeradors = aerogeradorService.alterarAerogerador(id, aerogerador);
-        return ResponseEntity.ok(aerogeradors);
+        try {
+            Aerogerador aerogeradors = aerogeradorService.alterarAerogerador(id, aerogerador);
+            return ResponseEntity.ok(aerogeradors);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Ocorreu um erro ao realizar a integração entre os serviços. Verifique o corpo da sua requisição");
+        }
     }
 
     @Operation(summary = "Deleta um aerogerador na base de dados", responses = {
@@ -71,7 +87,11 @@ public class AerogeradorController {
             @ApiResponse(responseCode = "404", description = "Not Found")})
     @DeleteMapping("/{id}")
     public ResponseEntity deletarAerogerador(@PathVariable("id") int id) {
-        aerogeradorService.deletarAeroGerador(id);
-        return ResponseEntity.noContent().build();
+        try {
+            aerogeradorService.deletarAeroGerador(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Ocorreu um erro ao realizar a integração entre os serviços. Verifique o corpo da sua requisição");
+        }
     }
 }

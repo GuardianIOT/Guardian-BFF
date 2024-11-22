@@ -30,8 +30,12 @@ public class ParqueController {
             @ApiResponse(responseCode = "400", description = "Bad Request")})
     @PostMapping
     public ResponseEntity criarParque(@RequestBody Parque parque) {
-        Parque parqueCriado = parqueService.criarParque(parque);
-        return ResponseEntity.status(HttpStatus.CREATED).body(parqueCriado);
+        try {
+            Parque parqueCriado = parqueService.criarParque(parque);
+            return ResponseEntity.status(HttpStatus.CREATED).body(parqueCriado);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Ocorreu um erro ao realizar a integração entre os serviços. Verifique o corpo da sua requisição");
+        }
     }
 
     @Operation(summary = "Busca um Parque na base de dados usando o id", responses = {
@@ -40,8 +44,12 @@ public class ParqueController {
             @ApiResponse(responseCode = "404", description = "Not Found")})
     @GetMapping("/{id}")
     public ResponseEntity obterParquePorId(@PathVariable int id) {
-        Parque parque = parqueService.obterParquePorId(id);
-        return ResponseEntity.ok(parque);
+        try {
+            Parque parque = parqueService.obterParquePorId(id);
+            return ResponseEntity.ok(parque);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Ocorreu um erro ao realizar a integração entre os serviços. Verifique o corpo da sua requisição");
+        }
     }
 
     @Operation(summary = "Lista os parques", responses = {
@@ -50,8 +58,12 @@ public class ParqueController {
             @ApiResponse(responseCode = "404", description = "Not Found")})
     @GetMapping
     public ResponseEntity obterParques() {
-        List<Parque> parques = parqueService.obterParques();
-        return ResponseEntity.ok(parques);
+        try {
+            List<Parque> parques = parqueService.obterParques();
+            return ResponseEntity.ok(parques);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Ocorreu um erro ao realizar a integração entre os serviços. Verifique o corpo da sua requisição");
+        }
     }
 
     @Operation(summary = "Altera um Parque na base de dados", responses = {
@@ -60,8 +72,12 @@ public class ParqueController {
             @ApiResponse(responseCode = "404", description = "Not Found")})
     @PutMapping("/{id}")
     public ResponseEntity alterarParque(@PathVariable("id") int id, @RequestBody Parque parque) {
-        Parque parqueAlterado = parqueService.alterarParque(id, parque);
-        return ResponseEntity.ok(parqueAlterado);
+        try {
+            Parque parqueAlterado = parqueService.alterarParque(id, parque);
+            return ResponseEntity.ok(parqueAlterado);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Ocorreu um erro ao realizar a integração entre os serviços. Verifique o corpo da sua requisição");
+        }
     }
 
     @Operation(summary = "Deleta um Parque na base de dados", responses = {
@@ -70,7 +86,11 @@ public class ParqueController {
             @ApiResponse(responseCode = "404", description = "Not Found")})
     @DeleteMapping("/{id}")
     public ResponseEntity deletarParque(@PathVariable("id") int id) {
-        parqueService.deletarParque(id);
-        return ResponseEntity.noContent().build();
+        try {
+            parqueService.deletarParque(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Ocorreu um erro ao realizar a integração entre os serviços. Verifique o corpo da sua requisição");
+        }
     }
 }

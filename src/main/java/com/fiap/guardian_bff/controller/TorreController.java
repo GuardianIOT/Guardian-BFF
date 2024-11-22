@@ -29,8 +29,12 @@ public class TorreController {
             @ApiResponse(responseCode = "400", description = "Bad Request")})
     @PostMapping
     public ResponseEntity criarTorre(@RequestBody Torre torre) {
-        Torre torreCriada = torreService.criarTorre(torre);
-        return ResponseEntity.status(HttpStatus.CREATED).body(torreCriada);
+        try {
+            Torre torreCriada = torreService.criarTorre(torre);
+            return ResponseEntity.status(HttpStatus.CREATED).body(torreCriada);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Ocorreu um erro ao realizar a integração entre os serviços. Verifique o corpo da sua requisição");
+        }
     }
 
     @Operation(summary = "Busca uma Torre na base de dados usando o id", responses = {
@@ -38,8 +42,12 @@ public class TorreController {
             @ApiResponse(responseCode = "404", description = "Not Found")})
     @GetMapping("/{id}")
     public ResponseEntity obterTorrePorId(@PathVariable int id) {
-        Torre torre = torreService.obterTorrePorId(id);
-        return ResponseEntity.ok(torre);
+        try {
+            Torre torre = torreService.obterTorrePorId(id);
+            return ResponseEntity.ok(torre);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Ocorreu um erro ao realizar a integração entre os serviços. Verifique o corpo da sua requisição");
+        }
     }
 
     @Operation(summary = "Lista as torres", responses = {
@@ -48,7 +56,11 @@ public class TorreController {
     @GetMapping
     public ResponseEntity obterTorres() {
         List<Torre> torres = torreService.obterTorres();
-        return ResponseEntity.ok(torres);
+        try {
+            return ResponseEntity.ok(torres);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Ocorreu um erro ao realizar a integração entre os serviços. Verifique o corpo da sua requisição");
+        }
     }
 
     @Operation(summary = "Altera uma Torre na base de dados", responses = {
@@ -56,8 +68,12 @@ public class TorreController {
             @ApiResponse(responseCode = "404", description = "Not Found")})
     @PutMapping("/{id}")
     public ResponseEntity alterarTorre(@PathVariable("id") int id, @RequestBody Torre torre) {
-        Torre torreAlterada = torreService.alterarTorre(id, torre);
-        return ResponseEntity.ok(torreAlterada);
+        try {
+            Torre torreAlterada = torreService.alterarTorre(id, torre);
+            return ResponseEntity.ok(torreAlterada);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Ocorreu um erro ao realizar a integração entre os serviços. Verifique o corpo da sua requisição");
+        }
     }
 
     @Operation(summary = "Deleta uma Torre na base de dados", responses = {
@@ -65,7 +81,11 @@ public class TorreController {
             @ApiResponse(responseCode = "404", description = "Not Found")})
     @DeleteMapping("/{id}")
     public ResponseEntity deletarTorre(@PathVariable("id") int id) {
-        torreService.deletarTorre(id);
-        return ResponseEntity.noContent().build();
+        try {
+            torreService.deletarTorre(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Ocorreu um erro ao realizar a integração entre os serviços. Verifique o corpo da sua requisição");
+        }
     }
 }
