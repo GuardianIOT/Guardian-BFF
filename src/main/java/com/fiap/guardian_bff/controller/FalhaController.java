@@ -30,8 +30,12 @@ public class FalhaController {
             @ApiResponse(responseCode = "400", description = "Bad Request")})
     @PostMapping
     public ResponseEntity criarFalha(@RequestBody Falha falha) {
-        Falha falhaCriada = falhaService.criarFalha(falha);
-        return ResponseEntity.status(HttpStatus.CREATED).body(falhaCriada);
+        try {
+            Falha falhaCriada = falhaService.criarFalha(falha);
+            return ResponseEntity.status(HttpStatus.CREATED).body(falhaCriada);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Ocorreu um erro ao realizar a integração entre os serviços. Verifique o corpo da sua requisição");
+        }
     }
 
     @Operation(summary = "Busca uma Falha na base de dados usando o id", responses = {
@@ -39,8 +43,12 @@ public class FalhaController {
             @ApiResponse(responseCode = "404", description = "Not Found")})
     @GetMapping("/{id}")
     public ResponseEntity obterFalhaPorId(@PathVariable("id") int id) {
-        Falha falha = falhaService.obterFalhaPorId(id);
-        return ResponseEntity.ok(falha);
+        try {
+            Falha falha = falhaService.obterFalhaPorId(id);
+            return ResponseEntity.ok(falha);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Ocorreu um erro ao realizar a integração entre os serviços. Verifique o corpo da sua requisição");
+        }
     }
 
     @Operation(summary = "Lista as falhas", responses = {
@@ -48,8 +56,13 @@ public class FalhaController {
             @ApiResponse(responseCode = "404", description = "Not Found")})
     @GetMapping
     public ResponseEntity obterFalhas() {
-        List<Falha> falhas = falhaService.obterFalhas();
-        return ResponseEntity.ok(falhas);
+        try {
+            List<Falha> falhas = falhaService.obterFalhas();
+            return ResponseEntity.ok(falhas);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Ocorreu um erro ao realizar a integração entre os serviços. Verifique o corpo da sua requisição");
+
+        }
     }
 
     @Operation(summary = "Altera uma Falha na base de dados", responses = {
@@ -57,8 +70,13 @@ public class FalhaController {
             @ApiResponse(responseCode = "404", description = "Not Found")})
     @PutMapping("/{id}")
     public ResponseEntity alterarFalha(@PathVariable("id") int id, @RequestBody Falha falha) {
-        Falha falhaAlterada = falhaService.alterarFalha(id, falha);
-        return ResponseEntity.ok(falhaAlterada);
+        try {
+            Falha falhaAlterada = falhaService.alterarFalha(id, falha);
+            return ResponseEntity.ok(falhaAlterada);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Ocorreu um erro ao realizar a integração entre os serviços. Verifique o corpo da sua requisição");
+
+        }
     }
 
     @Operation(summary = "Deleta uma Falha na base de dados", responses = {
@@ -66,7 +84,11 @@ public class FalhaController {
             @ApiResponse(responseCode = "404", description = "Not Found")})
     @DeleteMapping("/{id}")
     public ResponseEntity deletarFalha(@PathVariable("id") int id) {
-        falhaService.deletarFalha(id);
-        return ResponseEntity.noContent().build();
+        try {
+            falhaService.deletarFalha(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Ocorreu um erro ao realizar a integração entre os serviços. Verifique o corpo da sua requisição");
+        }
     }
 }
