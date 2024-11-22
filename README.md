@@ -1,2 +1,2 @@
 
-teste devops
+teste devops da global solution
